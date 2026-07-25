@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Custom theme colors based on Monkeytype-inspired palettes */
+  --color-brand: var(--color-brand-main);
+  --color-brand-hover: var(--color-brand-hover-main);
+}
+
+/* Custom CSS Variables for Theme Support */
+:root {
+  --color-bg: #1e1e24;
+  --color-main: #e2b714;
+  --color-caret: #e2b714;
+  --color-sub: #646669;
+  --color-sub-alt: #2c2e31;
+  --color-text: #d1d0c5;
+  --color-error: #ca4754;
+  --color-error-extra: #7e2a33;
+  --color-correct: #d1d0c5;
+  --font-size-base: 1.5rem; /* 24px default for typing */
+}
+
+/* Light Theme Variables */
+:root.light {
+  --color-bg: #f3f3f3;
+  --color-main: #d19a11;
+  --color-caret: #d19a11;
+  --color-sub: #7b7e81;
+  --color-sub-alt: #e6e6e6;
+  --color-text: #2f3e46;
+  --color-error: #ca4754;
+  --color-error-extra: #f8d7da;
+  --color-correct: #2f3e46;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  transition: background-color 0.25s ease, color 0.25s ease;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Selection style */
+::selection {
+  background: var(--color-main);
+  color: var(--color-bg);
+}
+
+/* Keyboard focus accessibility outline */
+*:focus-visible {
+  outline: 2px solid var(--color-main);
+  outline-offset: 4px;
+}
+
+/* Smooth blinking caret */
+@keyframes blink-line {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.caret-blink-line {
+  animation: blink-line 1s infinite;
+}
+
+@keyframes blink-block {
+  0%, 100% { background-color: var(--color-caret); }
+  50% { background-color: transparent; }
+}
+
+.caret-blink-block {
+  animation: blink-block 1s infinite;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Scrollbar for other components */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-sub-alt);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-sub);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-main);
+}
