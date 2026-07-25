@@ -19,6 +19,7 @@ export interface UserPreferences {
   fontSize: FontSize;
   sound: SoundOption;
   smoothAnimations: boolean;
+  codeTimeLimit: number;
 }
 
 export type TestStatus = 'idle' | 'typing' | 'completed';

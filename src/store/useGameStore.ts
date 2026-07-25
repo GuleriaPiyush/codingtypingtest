@@ -18,6 +18,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   fontSize: 'lg',
   sound: 'click',
   smoothAnimations: true,
+  codeTimeLimit: 0,
 };
 
 interface GameState {
@@ -219,7 +220,7 @@ export const useGameStore = create<GameState>((set, get) => {
       if (prefs.fontSize) applyFontSize(prefs.fontSize);
 
       // If key modes changed, regenerate target text
-      if (prefs.mode !== undefined || prefs.language !== undefined || prefs.wordLimit !== undefined || prefs.timeLimit !== undefined) {
+      if (prefs.mode !== undefined || prefs.language !== undefined || prefs.wordLimit !== undefined || prefs.timeLimit !== undefined || prefs.codeTimeLimit !== undefined) {
         get().resetTest();
       }
     },
@@ -228,18 +229,23 @@ export const useGameStore = create<GameState>((set, get) => {
       const { preferences } = get();
       const initialTextData = getInitialText(preferences.mode, preferences.language, preferences.wordLimit);
       
+      const isTimed = preferences.mode === 'time' || (preferences.mode === 'code' && preferences.codeTimeLimit > 0);
+      const initialTimeLimit = preferences.mode === 'time' 
+        ? preferences.timeLimit 
+        : (preferences.mode === 'code' && preferences.codeTimeLimit > 0 ? preferences.codeTimeLimit : 0);
+
       set({
         status: 'typing',
         startTime: Date.now(),
         endTime: null,
-        timeLeft: preferences.mode === 'time' ? preferences.timeLimit : 0,
+        timeLeft: isTimed ? initialTimeLimit : 0,
         typedText: initialTextData.typed,
         currentIndex: initialTextData.typed.length,
         mistakes: 0,
         stats: {
           wpm: 0, rawWpm: 0, accuracy: 100, cpm: 0, mistakes: 0,
           correctChars: 0, incorrectChars: 0, extraChars: 0, missedChars: 0,
-          timeElapsed: 0, totalTime: preferences.mode === 'time' ? preferences.timeLimit : 0,
+          timeElapsed: 0, totalTime: isTimed ? initialTimeLimit : 0,
           peakWpm: 0, history: []
         }
       });
@@ -249,11 +255,16 @@ export const useGameStore = create<GameState>((set, get) => {
       const { preferences } = get();
       const initialTextData = getInitialText(preferences.mode, preferences.language, preferences.wordLimit);
       
+      const isTimed = preferences.mode === 'time' || (preferences.mode === 'code' && preferences.codeTimeLimit > 0);
+      const initialTimeLimit = preferences.mode === 'time' 
+        ? preferences.timeLimit 
+        : (preferences.mode === 'code' && preferences.codeTimeLimit > 0 ? preferences.codeTimeLimit : 0);
+
       set({
         status: 'idle',
         startTime: null,
         endTime: null,
-        timeLeft: preferences.mode === 'time' ? preferences.timeLimit : 0,
+        timeLeft: isTimed ? initialTimeLimit : 0,
         textToType: initialTextData.text,
         typedText: initialTextData.typed,
         currentIndex: initialTextData.typed.length,
@@ -263,7 +274,7 @@ export const useGameStore = create<GameState>((set, get) => {
         stats: {
           wpm: 0, rawWpm: 0, accuracy: 100, cpm: 0, mistakes: 0,
           correctChars: 0, incorrectChars: 0, extraChars: 0, missedChars: 0,
-          timeElapsed: 0, totalTime: preferences.mode === 'time' ? preferences.timeLimit : 0,
+          timeElapsed: 0, totalTime: isTimed ? initialTimeLimit : 0,
           peakWpm: 0, history: []
         }
       });
@@ -296,11 +307,15 @@ export const useGameStore = create<GameState>((set, get) => {
       // Check if test is completed (reached the end of snippet or target words)
       const isCompleted = text.length >= textToType.length;
 
+      const totalTimeLimit = preferences.mode === 'time'
+        ? preferences.timeLimit 
+        : (preferences.mode === 'code' && preferences.codeTimeLimit > 0 ? preferences.codeTimeLimit : elapsed / 1000);
+
       const newStats = calculateStats(
         text,
         textToType,
         elapsed,
-        preferences.mode === 'time' ? preferences.timeLimit : elapsed / 1000,
+        totalTimeLimit,
         currentMistakes
       );
 
@@ -323,13 +338,18 @@ export const useGameStore = create<GameState>((set, get) => {
       const { status, timeLeft, startTime, textToType, typedText, mistakes, preferences } = get();
       if (status !== 'typing') return;
 
-      if (preferences.mode === 'time') {
+      const isTimed = preferences.mode === 'time' || (preferences.mode === 'code' && preferences.codeTimeLimit > 0);
+      const totalTimeLimit = preferences.mode === 'time'
+        ? preferences.timeLimit 
+        : (preferences.mode === 'code' && preferences.codeTimeLimit > 0 ? preferences.codeTimeLimit : 0);
+
+      if (isTimed) {
         const nextTimeLeft = timeLeft - 1;
         const elapsed = startTime ? Date.now() - startTime : 0;
         
         if (nextTimeLeft <= 0) {
           // Timer ended
-          const finalStats = calculateStats(typedText, textToType, elapsed, preferences.timeLimit, mistakes);
+          const finalStats = calculateStats(typedText, textToType, elapsed, totalTimeLimit, mistakes);
           set({
             status: 'completed',
             timeLeft: 0,
@@ -339,7 +359,7 @@ export const useGameStore = create<GameState>((set, get) => {
           get().completeTest();
         } else {
           // Update stats and tick down
-          const currentStats = calculateStats(typedText, textToType, elapsed, preferences.timeLimit, mistakes);
+          const currentStats = calculateStats(typedText, textToType, elapsed, totalTimeLimit, mistakes);
           
           // Append WPM node to timeline history for stats charts
           const elapsedSec = Math.round(elapsed / 1000);
@@ -386,11 +406,15 @@ export const useGameStore = create<GameState>((set, get) => {
       const { startTime, endTime, typedText, textToType, mistakes, preferences, stats } = get();
       const elapsed = startTime && endTime ? endTime - startTime : 0;
       
+      const totalTimeLimit = preferences.mode === 'time'
+        ? preferences.timeLimit 
+        : (preferences.mode === 'code' && preferences.codeTimeLimit > 0 ? preferences.codeTimeLimit : elapsed / 1000);
+
       const finalStats = calculateStats(
         typedText,
         textToType,
         elapsed,
-        preferences.mode === 'time' ? preferences.timeLimit : elapsed / 1000,
+        totalTimeLimit,
         mistakes
       );
 

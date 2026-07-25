@@ -25,15 +25,17 @@ export const StatsWidget = () => {
   }
   const missed = Math.max(0, textToType.length - typedText.length);
 
+  const isTimed = preferences.mode === 'time' || (preferences.mode === 'code' && preferences.codeTimeLimit > 0);
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 w-full max-w-4xl mx-auto mb-6 px-2 select-none font-mono text-xs text-[var(--color-sub)]">
       {/* Left: Large timer or status counter */}
       <div className="flex items-end gap-1.5">
         <span className="text-3xl font-bold text-[var(--color-main)] leading-none">
-          {preferences.mode === 'time' ? timeLeft : stats.timeElapsed}
+          {isTimed ? timeLeft : stats.timeElapsed}
         </span>
         <span className="text-[10px] uppercase tracking-wider mb-1">
-          {preferences.mode === 'time' ? 's remaining' : 's elapsed'}
+          {isTimed ? 's remaining' : 's elapsed'}
         </span>
       </div>
 

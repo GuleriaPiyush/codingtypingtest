@@ -92,23 +92,44 @@ export const SettingsPanel = () => {
             </div>
           )}
 
-          {/* Code Options (Language Dropdown) */}
+          {/* Code Options (Language Dropdown & Timer) */}
           {preferences.mode === 'code' && (
-            <div className="relative flex items-center gap-2">
-              <span className="text-[var(--color-sub)] font-medium">language:</span>
-              <div className="relative group">
-                <select
-                  value={preferences.language}
-                  onChange={(e) => updatePreferences({ language: e.target.value })}
-                  className="appearance-none bg-[var(--color-bg)] text-[var(--color-main)] font-bold px-3 pr-8 py-1 rounded-lg border border-[var(--color-sub-alt)] focus:outline-none cursor-pointer text-xs"
-                >
-                  {languages.map((lang) => (
-                    <option key={lang} value={lang} className="bg-[var(--color-bg)] text-[var(--color-text)]">
-                      {lang.toUpperCase()}
-                    </option>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="relative flex items-center gap-2">
+                <span className="text-[var(--color-sub)] font-medium">language:</span>
+                <div className="relative group">
+                  <select
+                    value={preferences.language}
+                    onChange={(e) => updatePreferences({ language: e.target.value })}
+                    className="appearance-none bg-[var(--color-bg)] text-[var(--color-main)] font-bold px-3 pr-8 py-1 rounded-lg border border-[var(--color-sub-alt)] focus:outline-none cursor-pointer text-xs"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang} value={lang} className="bg-[var(--color-bg)] text-[var(--color-text)]">
+                        {lang.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-main)] pointer-events-none" />
+                </div>
+              </div>
+              <div className="w-[1px] h-4 bg-[var(--color-sub)]/20" />
+              <div className="flex items-center gap-2">
+                <span className="text-[var(--color-sub)] font-medium">time:</span>
+                <div className="flex items-center gap-1.5">
+                  {([0, 15, 30, 60, 120] as const).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => updatePreferences({ codeTimeLimit: t })}
+                      className={`px-2 py-0.5 rounded cursor-pointer transition-colors ${
+                        (preferences.codeTimeLimit ?? 0) === t 
+                          ? 'text-[var(--color-main)] font-bold' 
+                          : 'text-[var(--color-sub)] hover:text-[var(--color-text)]'
+                      }`}
+                    >
+                      {t === 0 ? 'none' : t}
+                    </button>
                   ))}
-                </select>
-                <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-main)] pointer-events-none" />
+                </div>
               </div>
             </div>
           )}
