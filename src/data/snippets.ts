@@ -488,6 +488,61 @@ export const ThemeProvider = ({ children }) => {
     </ThemeCtx.Provider>
   );
 };`
+  },
+  {
+    id: 'py-quicksort',
+    language: 'python',
+    title: 'Quick Sort Algorithm',
+    difficulty: 'medium',
+    code: `def quicksort(arr: list[int]) -> list[int]:
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)`
+  },
+  {
+    id: 'py-context-manager',
+    language: 'python',
+    title: 'Custom Context Manager',
+    difficulty: 'medium',
+    code: `import time
+
+class TimerContext:
+    def __enter__(self):
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.end = time.perf_counter()
+        self.elapsed = self.end - self.start
+        print(f"Elapsed time: {self.elapsed:.6f} seconds")`
+  },
+  {
+    id: 'py-retry-decorator',
+    language: 'python',
+    title: 'Retry Decorator',
+    difficulty: 'hard',
+    code: `import time
+from functools import wraps
+
+def retry(retries: int, delay: float = 1.0):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            attempts = 0
+            while attempts < retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    attempts += 1
+                    if attempts == retries:
+                        raise e
+                    time.sleep(delay)
+        return wrapper
+    return decorator`
   }
 ];
 
