@@ -320,6 +320,174 @@ export const AutoFocusInput = ({ onComplete }) => {
     </div>
   );
 };`
+  },
+  {
+    id: 'js-array-reduce',
+    language: 'javascript',
+    title: 'Array Reduce Sum',
+    difficulty: 'easy',
+    code: `const products = [
+  { name: "Laptop", price: 999, quantity: 2 },
+  { name: "Mouse", price: 49, quantity: 5 },
+  { name: "Keyboard", price: 89, quantity: 3 }
+];
+
+const totalValue = products.reduce((acc, item) => {
+  const itemTotal = item.price * item.quantity;
+  return acc + itemTotal;
+}, 0);
+
+console.log(\`Total warehouse value: \${totalValue}\`);`
+  },
+  {
+    id: 'ts-generic-api-response',
+    language: 'typescript',
+    title: 'Generic API Response Model',
+    difficulty: 'medium',
+    code: `export type ApiResponseStatus = 'success' | 'error' | 'pending';
+
+export interface ApiResponse<T> {
+  status: ApiResponseStatus;
+  data: T | null;
+  message: string;
+  statusCode: number;
+  timestamp: string;
+}
+
+export function createResponse<T>(data: T, message = "Success"): ApiResponse<T> {
+  return {
+    status: 'success',
+    data,
+    message,
+    statusCode: 200,
+    timestamp: new Date().toISOString()
+  };
+}`
+  },
+  {
+    id: 'py-binary-search',
+    language: 'python',
+    title: 'Binary Search Algorithm',
+    difficulty: 'medium',
+    code: `def binary_search(arr: list[int], target: int) -> int:
+    low, high = 0, len(arr) - 1
+    
+    while low <= high:
+        mid = (low + high) // 2
+        guess = arr[mid]
+        if guess == target:
+            return mid
+        if guess > target:
+            high = mid - 1
+        else:
+            low = mid + 1
+            
+    return -1 # Target not found`
+  },
+  {
+    id: 'go-http-handler',
+    language: 'go',
+    title: 'HTTP JSON Response Handler',
+    difficulty: 'medium',
+    code: `package main
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type StatusResponse struct {
+	Status string \`json:"status"\`
+	Code   int    \`json:"code"\`
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := StatusResponse{Status: "healthy", Code: 200}
+	json.NewEncoder(w).Encode(response)
+}`
+  },
+  {
+    id: 'rust-trait-impl',
+    language: 'rust',
+    title: 'Struct & Trait Implementation',
+    difficulty: 'medium',
+    code: `struct Circle {
+    radius: f64,
+}
+
+trait Area {
+    fn area(&self) -> f64;
+}
+
+impl Area for Circle {
+    fn area(&self) -> f64 {
+        std::f64::consts::PI * self.radius.powi(2)
+    }
+}
+
+fn main() {
+    let c = Circle { radius: 4.5 };
+    println!("Circle area: {:.2}", c.area());
+}`
+  },
+  {
+    id: 'css-glassmorphism',
+    language: 'css',
+    title: 'Glassmorphism Style Card',
+    difficulty: 'easy',
+    code: `.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}`
+  },
+  {
+    id: 'sql-transaction',
+    language: 'sql',
+    title: 'SQL Safe Account Transfer',
+    difficulty: 'hard',
+    code: `BEGIN TRANSACTION;
+
+UPDATE accounts 
+SET balance = balance - 250.00 
+WHERE account_id = 9921 AND balance >= 250.00;
+
+-- Save checkpoint
+SAVEPOINT debit_done;
+
+UPDATE accounts 
+SET balance = balance + 250.00 
+WHERE account_id = 8843;
+
+-- Verify both updates succeeded before commit
+COMMIT;`
+  },
+  {
+    id: 'jsx-theme-provider',
+    language: 'react jsx',
+    title: 'Theme Context Provider',
+    difficulty: 'medium',
+    code: `import React, { createContext, useContext, useState } from 'react';
+
+const ThemeCtx = createContext(undefined);
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('dark');
+  const toggle = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
+  return (
+    <ThemeCtx.Provider value={{ theme, toggle }}>
+      <div className={theme === 'dark' ? 'dark-theme' : 'light-theme'}>
+        {children}
+      </div>
+    </ThemeCtx.Provider>
+  );
+};`
   }
 ];
 
